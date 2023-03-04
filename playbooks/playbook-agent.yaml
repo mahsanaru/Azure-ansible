@@ -1,0 +1,71 @@
+---
+- name: Install Kubernetes
+  hosts: agent
+  become: true
+  become: yes
+  hosts: kubernetes 
+  tasks:
+    - name: Download Agent
+      command: wget https://vstsagentpackage.azureedge.net/agent/3.212.0/vsts-agent-linux-x64-3.212.0.tar.gz
+    
+    - name: Install agent
+      command: ./config.sh --unattended --url https://dev.azure.com/monemmahsa9 --auth l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token myToken --pool test --agent myAgent --acceptTeeEula
+    
+    - name: Run as service
+      command: ./svc.sh install
+    
+    - name: Install Kubelet 
+      command: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && cp kubectl /usr/local/bin/ && chmod 777 /usr/local/bin/kubectl
+
+    - name: Install Dotnet Repository
+      command: wget https://packages.microsoft.com/config/ubuntu/22.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
+
+   - name: Install Dotnet 
+     apt:  
+       name: dotnet-sdk-7.0
+       state: installed
+       update_cache: true
+
+  - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+        update_cache: true
+
+    - name: Enable and Start docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
