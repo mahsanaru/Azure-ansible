@@ -9,7 +9,7 @@
       command: wget https://vstsagentpackage.azureedge.net/agent/3.212.0/vsts-agent-linux-x64-3.212.0.tar.gz
     
     - name: Install agent
-      command: ./config.sh --unattended --url https://dev.azure.com/monemmahsa9 --auth l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token myToken --pool test --agent myAgent --acceptTeeEula
+      command: ./config.sh --unattended --url https://dev.azure.com/monemmahsa9 --auth pat --token l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --pool test --agent myAgent --acceptTeeEula
     
     - name: Run as service
       command: ./svc.sh install

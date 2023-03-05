@@ -33,11 +33,12 @@
       ansible.posix.selinux:
         policy: targeted
         state: permissive
+      when: ansible_os_family == 'RedHat'
 
     - name: Disable SELinux
       ansible.posix.selinux:
         state: disabled
-  when: ansible_os_family == 'RedHat'
+      when: ansible_os_family == 'RedHat'
 
 - name: Install openssl
   ansible.builtin.package: 
@@ -46,10 +47,10 @@
     state: present
 
 - name: load overlay kernel module
-  ansible.builtin.command: modprobe overlay
+  command: modprobe overlay
 
 - name: load br_netfilter kernel module
-  ansible.builtin.command: modprobe br_netfilter
+  command: modprobe br_netfilter
 
 - name: load kernel modules - persistent
   blockinfile:
@@ -69,11 +70,10 @@
       net.bridge.bridge-nf-call-ip6tables = 1
 
 - name: load br_netfilter kernel module
-  ansible.builtin.command: sysctl --system
+  command: sysctl --system
 
 - name: Disable SWAP
-  ansible.builtin.shell: |
-    swapoff -a
+  command: swapoff -a
 
 - name: Disable SWAP in fstab
   ansible.builtin.replace:
@@ -83,20 +83,13 @@
     backup: yes
 
 - name: check iptables version
-  ansible.builtin.shell: iptables --version
+  command: iptables --version
   register: iptables_version
   ignore_errors: yes
 
 - block:  
-    - community.general.alternatives:
-        name: iptables
-        link: /usr/sbin/iptables
-        path: /usr/sbin/iptables-legacy
-
-    - community.general.alternatives:
-        name: ip6tables
-        link: /usr/sbin/ip6tables
-        path: /usr/sbin/ip6tables-legacy
+    - name: Set iptables to use iptables-legacy
+      command: update-alternatives --set iptables /usr/sbin/iptables-legacy
 
     - ansible.builtin.reboot:
         msg: "Reboot initiated by Ansible for iptables-legacy"

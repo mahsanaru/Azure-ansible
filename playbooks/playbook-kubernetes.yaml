@@ -1,11 +1,15 @@
 ---
+- name: Install local storage provisioner, Helm and flux
+  become: yes
+  command: pip install -r ../roles/ansible-role-linux-kubernetes/requirements.txt 
+  
 - name: Install Kubernetes
   hosts: kubernetes
   become: true
 
   roles:
-    - role: ansible-role-linux-kubernetes
----
+    - role: ../roles/ansible-role-linux-kubernetes
+
 - name: Install local storage provisioner, Helm and flux
   become: yes
   hosts: kubernetes 
@@ -14,7 +18,7 @@
       command: kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.23/deploy/local-path-storage.yaml
 
     - name: Add as default storageclass
-      command: kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+      command: "{{ 'kubectl patch storageclass local-path -p {\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}' | quote }}"
 
     - name: Install Helm
       command: curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh
@@ -26,8 +30,8 @@
       command: flux bootstrap git --url=https://dev.azure.com/monemmahsa9/_git/monemmahsa9  --branch=master --password=l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token-auth=true
     
     - name: Set strictARP for Metallb
-      command: kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e "s/strictARP: false/strictARP: true/" | kubectl apply -f - -n kube-system
-    
+      shell: "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
+
     - name: Deploy Metallb
       command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
     
