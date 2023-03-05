@@ -1,7 +1,7 @@
 ---
 
 - name: Check cluster status
-  ansible.builtin.shell: kubectl get nodes
+  command: kubectl get nodes
   ignore_errors: yes
   register: cluster_exist
 

@@ -10,18 +10,6 @@
   when: ansible_os_family == 'Debian'
 
 - block:
-    - name: Install iptables-legacy
-      ansible.builtin.dnf: 
-        name: 
-          - iptables-legacy
-        state: present
-    
-    - name: Remove zram-generator-defaults
-      ansible.builtin.dnf: 
-        name: 
-          - zram-generator-defaults
-        state: absent
-
     - name: disable firewalld
       ansible.builtin.systemd:
         name: firewalld 
@@ -45,12 +33,6 @@
     name: 
       - openssl
     state: present
-
-- name: load overlay kernel module
-  command: modprobe overlay
-
-- name: load br_netfilter kernel module
-  command: modprobe br_netfilter
 
 - name: load kernel modules - persistent
   blockinfile:

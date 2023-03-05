@@ -1,13 +1,14 @@
 ---
-- name: Install local storage provisioner, Helm and flux
-  become: yes
-  command: pip install -r ../roles/ansible-role-linux-kubernetes/requirements.txt 
-  
 - name: Install Kubernetes
   hosts: kubernetes
   become: true
 
+  vars:
+    kubernetes_allow_pods_on_control_plane: true
+
   roles:
+    - geerlingguy.docker
+    - geerlingguy.kubernetes
     - role: ../roles/ansible-role-linux-kubernetes
 
 - name: Install local storage provisioner, Helm and flux

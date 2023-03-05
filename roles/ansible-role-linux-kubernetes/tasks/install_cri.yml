@@ -22,7 +22,7 @@
       register: containerd_config
 
     - name: Render containerd default config
-      ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+      command: containerd config default > /etc/containerd/config.toml
       when: 
         - containerd_config.found
 
