@@ -78,7 +78,7 @@
         dest: /root/kubeadm-join-master.yml
     
     - name: Cluster join - master
-      ansible.builtin.command: kubeadm join --config /root/kubeadm-join-master.yml
+      command: kubeadm join --config /root/kubeadm-join-master.yml
       register: kubeadm_join
       changed_when: kubeadm_join is success
 
@@ -105,7 +105,7 @@
         dest: /root/kubeadm-join-worker.yml
     
     - name: Cluster join - worker
-      ansible.builtin.command: kubeadm join --config /root/kubeadm-join-worker.yml
+      command: kubeadm join --config /root/kubeadm-join-worker.yml
       register: kubeadm_join
       changed_when: kubeadm_join is success
   when:

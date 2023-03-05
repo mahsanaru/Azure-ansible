@@ -7,8 +7,6 @@
     kubernetes_allow_pods_on_control_plane: true
 
   roles:
-    - geerlingguy.docker
-    - geerlingguy.kubernetes
     - role: ../roles/ansible-role-linux-kubernetes
 
 - name: Install local storage provisioner, Helm and flux

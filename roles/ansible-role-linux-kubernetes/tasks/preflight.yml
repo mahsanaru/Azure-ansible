@@ -17,17 +17,6 @@
         enabled: no
       when: disable_firewall
 
-    - name: Put SELinux in permissive mode, logging actions that would be blocked.
-      ansible.posix.selinux:
-        policy: targeted
-        state: permissive
-      when: ansible_os_family == 'RedHat'
-
-    - name: Disable SELinux
-      ansible.posix.selinux:
-        state: disabled
-      when: ansible_os_family == 'RedHat'
-
 - name: Install openssl
   ansible.builtin.package: 
     name: 
