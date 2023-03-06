@@ -15,7 +15,9 @@
       command: /tmp/config.sh --unattended --url https://dev.azure.com/monemmahsa9 --auth pat --token l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --pool test --agent myAgent --acceptTeeEula
 
     - name: Run as service
-      command: /tmp/svc.sh install mahsa
+      command: ./svc.sh install mahsa
+      become: true
+
     
     - name: Download kubectl binary
       get_url:
