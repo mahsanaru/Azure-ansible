@@ -35,12 +35,13 @@
       shell: "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
 
     - name: Deploy Metallb
-      command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
+      shell: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
     
     - name: Config Metallb
       k8s:
         src: kubernetes-files/kubernetes-files
         state: present
         apply: true
+
     - name: Deploy Gitlab with Cert-manager & Nginx Ingress Controller
-      command: helm repo add gitlab https://charts.gitlab.io/ && helm repo update && helm upgrade --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=mahsa-monem.maxtld.dev --set certmanager-issuer.email=monemmahsa9@gmail.com --set upgradeCheck.enabled=false --set global.hosts.externalIP=10.254.10.146 --set gitlab-runner.install=false  --set global.ingress.annotations."kubernetes\.io/tls-acme"=true --set nginx-ingress.enabled=true --set global.ingress.class=nginx --set global.ingress.configureCertmanager=true 
+      shell: helm repo add gitlab https://charts.gitlab.io/ && helm repo update && helm upgrade --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=mahsa-monem.maxtld.dev --set certmanager-issuer.email=monemmahsa9@gmail.com --set upgradeCheck.enabled=false --set global.hosts.externalIP=10.254.10.146 --set gitlab-runner.install=false  --set global.ingress.annotations."kubernetes\.io/tls-acme"=true --set nginx-ingress.enabled=true --set global.ingress.class=nginx --set global.ingress.configureCertmanager=true 
