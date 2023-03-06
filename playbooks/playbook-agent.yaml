@@ -10,19 +10,18 @@
         remote_src: yes
         mode: 0777
     
-    - name: Install agent
+    - name: Install agent config
       become: no
       command: /tmp/config.sh --unattended --url https://dev.azure.com/monemmahsa9 --auth pat --token l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --pool test --agent myAgent --acceptTeeEula
-    
-    - name: Install agent
-      become: no
-      command: /tmp/run.sh
 
     - name: Run as service
-      command: /tmp/svc.sh install
+      command: /tmp/svc.sh install mahsa
     
     - name: Download kubectl binary
-      command: "curl -LO https://dl.k8s.io/release/v1.26.1/bin/linux/amd64/kubectl"
+      get_url:
+        url: https://dl.k8s.io/release/v1.26.0/bin/linux/amd64/kubectl
+        dest: /tmp/kubectl 
+        remote_src: yes
     
     - name: Copy kubectl binary to /usr/local/bin/
       copy:
@@ -30,32 +29,6 @@
         dest: /usr/local/bin/kubectl
         mode: '0777'
         remote_src: yes
-
-    - name: Get Dotnet repository
-      get_url:
-        url: https://packages.microsoft.com/config/ubuntu/22.10/packages-microsoft-prod.deb
-        dest: /tmp/packages-microsoft-prod.deb
-
-    - name: Install Dotnet repository package
-      apt:
-        deb: /tmp/packages-microsoft-prod.deb
-        state: present
-
-    - name: Get netstandard-targeting-pack package
-      get_url:
-        url: https://packages.microsoft.com/ubuntu/20.04/prod/pool/main/n/netstandard-targeting-pack-2.1/netstandard-targeting-pack-2.1_2.1.0-1_amd64.deb
-        state: /tmp/netstandard-targeting-pack-2.1_2.1.0-1_amd64.deb
-
-    - name: Install netstandard-targeting-pack repository package
-      apt:
-        deb: /tmp/netstandard-targeting-pack
-        state: present
-
-    - name: Install Dotnet 
-      apt:  
-        name: dotnet-sdk-7.0
-        state: present
-        update_cache: true
 
     - name: Install aptitude
       apt:
@@ -68,11 +41,8 @@
         pkg:
           - apt-transport-https
           - ca-certificates
-          - curl
           - software-properties-common
-          - python3-pip
           - virtualenv
-          - python3-setuptools
         state: latest
         update_cache: true
 
@@ -100,3 +70,29 @@
         name: docker
         state: started
         enabled: yes
+
+    - name: Get Dotnet repository
+      get_url:
+        url: https://packages.microsoft.com/config/ubuntu/22.10/packages-microsoft-prod.deb
+        dest: /tmp/packages-microsoft-prod.deb
+
+    - name: Install Dotnet repository package
+      apt:
+        deb: /tmp/packages-microsoft-prod.deb
+        state: present
+
+    - name: Get netstandard-targeting-pack package
+      get_url:
+        url: https://packages.microsoft.com/ubuntu/20.04/prod/pool/main/n/netstandard-targeting-pack-2.1/netstandard-targeting-pack-2.1_2.1.0-1_amd64.deb
+        dest: /tmp/netstandard-targeting-pack.deb
+
+    - name: Install netstandard-targeting-pack repository package
+      apt:
+        deb: /tmp/netstandard-targeting-pack.deb
+        state: present
+
+    - name: Install Dotnet 
+      apt:  
+        name: dotnet-sdk-7.0
+        state: present
+        update_cache: true
