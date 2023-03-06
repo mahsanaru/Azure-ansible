@@ -21,16 +21,40 @@
     - name: Run as service
       command: /tmp/svc.sh install
     
-    - name: Install Kubelet 
-      command: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && cp kubectl /usr/local/bin/ && chmod 777 /usr/local/bin/kubectl
+    - name: Download kubectl binary
+      command: "curl -LO https://dl.k8s.io/release/v1.26.1/bin/linux/amd64/kubectl"
+    
+    - name: Copy kubectl binary to /usr/local/bin/
+      copy:
+        src: /tmp/kubectl
+        dest: /usr/local/bin/kubectl
+        mode: '0777'
+        remote_src: yes
 
-    - name: Install Dotnet Repository
-      command: wget https://packages.microsoft.com/config/ubuntu/22.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
+    - name: Get Dotnet repository
+      get_url:
+        url: https://packages.microsoft.com/config/ubuntu/22.10/packages-microsoft-prod.deb
+        dest: /tmp/packages-microsoft-prod.deb
+
+    - name: Install Dotnet repository package
+      apt:
+        deb: /tmp/packages-microsoft-prod.deb
+        state: present
+
+    - name: Get netstandard-targeting-pack package
+      get_url:
+        url: https://packages.microsoft.com/ubuntu/20.04/prod/pool/main/n/netstandard-targeting-pack-2.1/netstandard-targeting-pack-2.1_2.1.0-1_amd64.deb
+        state: /tmp/netstandard-targeting-pack-2.1_2.1.0-1_amd64.deb
+
+    - name: Install netstandard-targeting-pack repository package
+      apt:
+        deb: /tmp/netstandard-targeting-pack
+        state: present
 
     - name: Install Dotnet 
       apt:  
         name: dotnet-sdk-7.0
-        state: installed
+        state: present
         update_cache: true
 
     - name: Install aptitude
@@ -41,7 +65,7 @@
 
     - name: Install required system packages
       apt:
-        name:
+        pkg:
           - apt-transport-https
           - ca-certificates
           - curl

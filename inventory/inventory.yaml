@@ -1,4 +1,2 @@
-agent ansible_port=2244 ansible_host=mahsa-monem-2.maxtld.dev ansible_user=mahsa ansible_ssh_pass=to2014gZtWo44d 
-
-[kubemaster]
 kubernetes ansible_port=2233 ansible_host=mahsa-monem.maxtld.dev ansible_user=mahsa ansible_ssh_pass=JBXc98b1$J!2jvzxHa
+agent ansible_port=2244 ansible_host=mahsa-monem-2.maxtld.dev ansible_user=mahsa ansible_ssh_pass=to2014gZtWo44d 

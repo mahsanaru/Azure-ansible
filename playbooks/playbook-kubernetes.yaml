@@ -44,7 +44,7 @@
           namespace: metallb-system
         spec:
           addresses:
-          - 103.15.137.228/32
+          - 10.254.10.146/32
         EOF
     - name: Deploy Gitlab with Cert-manager & Nginx Ingress Controller
-      command: helm repo add gitlab https://charts.gitlab.io/ && helm repo update && helm upgrade --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=mahsa-monem.maxtld.dev --set certmanager-issuer.email=monemmahsa9@gmail.com --set upgradeCheck.enabled=false --set global.hosts.externalIP=103.15.137.228 --set gitlab-runner.install=false  --set global.ingress.annotations."kubernetes\.io/tls-acme"=true --set nginx-ingress.enabled=true --set global.ingress.class=nginx --set global.ingress.configureCertmanager=true 
+      command: helm repo add gitlab https://charts.gitlab.io/ && helm repo update && helm upgrade --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=mahsa-monem.maxtld.dev --set certmanager-issuer.email=monemmahsa9@gmail.com --set upgradeCheck.enabled=false --set global.hosts.externalIP=10.254.10.146 --set gitlab-runner.install=false  --set global.ingress.annotations."kubernetes\.io/tls-acme"=true --set nginx-ingress.enabled=true --set global.ingress.class=nginx --set global.ingress.configureCertmanager=true 
