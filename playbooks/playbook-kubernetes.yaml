@@ -20,10 +20,13 @@
       command: "{{ 'kubectl patch storageclass local-path -p {\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}' | quote }}"
 
     - name: Install Helm
-      command: curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh
-    
+      shell: >
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 &&
+        chmod 700 get_helm.sh &&
+        ./get_helm.sh
+
     - name: Install Flux
-      command: curl -s https://fluxcd.io/install.sh | sudo bash
+      shell: curl -s https://fluxcd.io/install.sh | bash
 
     - name: Bootstrap Flux
       command: flux bootstrap git --url=https://dev.azure.com/monemmahsa9/_git/monemmahsa9  --branch=master --password=l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token-auth=true
@@ -35,16 +38,9 @@
       command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
     
     - name: Config Metallb
-      command: |
-        cat <<EOF
-        apiVersion: metallb.io/v1beta1
-        kind: IPAddressPool
-        metadata:
-          name: first-pool
-          namespace: metallb-system
-        spec:
-          addresses:
-          - 10.254.10.146/32
-        EOF
+      k8s:
+        src: kubernetes-files/kubernetes-files
+        state: present
+        apply: true
     - name: Deploy Gitlab with Cert-manager & Nginx Ingress Controller
       command: helm repo add gitlab https://charts.gitlab.io/ && helm repo update && helm upgrade --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=mahsa-monem.maxtld.dev --set certmanager-issuer.email=monemmahsa9@gmail.com --set upgradeCheck.enabled=false --set global.hosts.externalIP=10.254.10.146 --set gitlab-runner.install=false  --set global.ingress.annotations."kubernetes\.io/tls-acme"=true --set nginx-ingress.enabled=true --set global.ingress.class=nginx --set global.ingress.configureCertmanager=true 
