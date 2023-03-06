@@ -6,20 +6,21 @@
     - name: Download Agent and Unzip agent file
       unarchive:
         src: https://vstsagentpackage.azureedge.net/agent/3.212.0/vsts-agent-linux-x64-3.212.0.tar.gz
-        dest: /tmp
+        dest: /home/mahsa
         remote_src: yes
         mode: 0777
     
     - name: Install agent config
       become: no
-      command: /tmp/config.sh --unattended --url https://dev.azure.com/monemmahsa9 --auth pat --token l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --pool test --agent myAgent --acceptTeeEula
+      command: /home/mahsa/config.sh --unattended --url https://dev.azure.com/monemmahsa9 --auth pat --token l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --pool test --agent myAgent --acceptTeeEula
 
     - name: Run as service
-      command: /tmp/svc.sh install 
-      args:
-        chdir: /root
+      command: /home/mahsa/svc.sh install 
       become: true
 
+    - name: Start agent service
+      command: /home/mahsa/svc.sh start 
+      become: true
     
     - name: Download kubectl binary
       get_url:
