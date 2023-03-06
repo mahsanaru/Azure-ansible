@@ -28,20 +28,14 @@
     - name: Install Flux
       shell: curl -s https://fluxcd.io/install.sh | bash
 
-    - name: Bootstrap Flux
-      command: flux bootstrap git --url=https://dev.azure.com/monemmahsa9/_git/monemmahsa9  --branch=master --password=l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token-auth=true
-    
-    - name: Set strictARP for Metallb
-      shell: "kubectl get configmap kube-proxy -n kube-system -o yaml | sed -e 's/strictARP: false/strictARP: true/' | kubectl apply -f - -n kube-system"
-
     - name: Deploy Metallb
       shell: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.9/config/manifests/metallb-native.yaml
-    
-    - name: Config Metallb
-      k8s:
-        src: kubernetes-files/kubernetes-files
-        state: present
-        apply: true
 
     - name: Deploy Gitlab with Cert-manager & Nginx Ingress Controller
       shell: helm repo add gitlab https://charts.gitlab.io/ && helm repo update && helm upgrade --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=mahsa-monem.maxtld.dev --set certmanager-issuer.email=monemmahsa9@gmail.com --set upgradeCheck.enabled=false --set global.hosts.externalIP=10.254.10.146 --set gitlab-runner.install=false  --set global.ingress.annotations."kubernetes\.io/tls-acme"=true --set nginx-ingress.enabled=true --set global.ingress.class=nginx --set global.ingress.configureCertmanager=true 
+
+    - name: Bootstrap Flux
+      command: flux bootstrap git --url=https://dev.azure.com/monemmahsa9/_git/monemmahsa9  --branch=master --password=l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token-auth=true
+    
+    - name: Run script to config Metallb, default storage class and add helmrelease
+      shell: ../script.sh    
