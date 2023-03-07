@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## run  playbooks
-ansible-playbook -i inventory/inventory.yaml playbooks/playbook-agent.yaml 
+#ansible-playbook -i inventory/inventory.yaml playbooks/playbook-agent.yaml 
 ansible-playbook -i inventory/inventory.yaml playbooks/playbook-kubernetes.yaml 
 
 ## set default storage
