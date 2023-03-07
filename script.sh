@@ -20,21 +20,17 @@ spec:
   - 10.254.10.146/32
 EOF
 
-
-## add ingress for gitlab
-cat <<EOF | kubectl create -f -
-
 ## add helmrelease
 cat <<EOF | kubectl create -f -
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: weather-app
-  namespace: server
 spec:
   interval: 1m
   install:
     createNamespace: true
+    disableWait: true
   chart:
     spec:
       chart: ./charts/weather-app
