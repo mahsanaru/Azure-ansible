@@ -1,17 +1,18 @@
 ---
-- name: Install Kubernetes
-  hosts: kubernetes
-  become: true
+# - name: Install Kubernetes
+#   hosts: kubernetes
+#   become: true
 
-  vars:
-    kubernetes_allow_pods_on_control_plane: true
+#   vars:
+#     kubernetes_allow_pods_on_control_plane: true
 
-  roles:
-    - role: ../roles/ansible-role-linux-kubernetes
+#   roles:
+#     - role: ../roles/ansible-role-linux-kubernetes
 
 - name: Install local storage provisioner, Helm and flux
   become: yes
-  hosts: kubernetes 
+#  hosts: kubernetes 
+  host: localhost
   tasks:
     - name: Install local storage provisioner
       command: kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.23/deploy/local-path-storage.yaml
