@@ -32,4 +32,4 @@
       shell: helm repo add gitlab https://charts.gitlab.io/ && helm repo update && helm upgrade --install gitlab gitlab/gitlab   --timeout 600s   --set global.hosts.domain=mahsa-monem.maxtld.dev --set certmanager-issuer.email=monemmahsa9@gmail.com --set upgradeCheck.enabled=false --set global.hosts.externalIP=10.254.10.146 --set gitlab-runner.install=false  --set global.ingress.annotations."kubernetes\.io/tls-acme"=true --set nginx-ingress.enabled=true --set global.ingress.class=nginx --set global.ingress.configureCertmanager=true 
 
     - name: Bootstrap Flux
-      command: flux bootstrap git --url=https://dev.azure.com/monemmahsa9/_git/monemmahsa9  --branch=master --password=l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token-auth=true
+      command: flux bootstrap git --url=https://dev.azure.com/monemmahsa9/_git/monemmahsa9  --branch=master --password=l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token-auth=true --verbose

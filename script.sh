@@ -20,9 +20,22 @@ spec:
   - 10.254.10.146/32
 EOF
 
+## add gitrepo
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: helmrepo
+  namespace: flux-system
+spec:
+  interval: 1m
+  ref:
+    branch: master
+  url: https://dev.azure.com/monemmahsa9/monemmahsa9/_git/monemmahsa9
+  secretRef:
+    name: azure-devops-pat
+
 ## add helmrelease
 cat <<EOF | kubectl create -f -
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: weather-app
@@ -36,10 +49,24 @@ spec:
       chart: ./charts/weather-app
       sourceRef:
         kind: GitRepository
-        name: flux-system
+        name: helmrepo
         namespace: flux-system
       interval: 1m
 EOF
+
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: helmrepo
+  namespace: flux-system
+spec:
+  gitImplementation: go-git
+  interval: 1m0s
+  ref:
+    branch: master
+  secretRef:
+    name: flux-system
+  url: https://dev.azure.com/monemmahsa9/monemmahsa9/_git/monemmahsa9
 
 ## set ingress for gitlab & registry
 kubectl get ingress gitlab-webservice-default -o yaml | sed -e 's/gitlab.mahsa-monem.maxtld.dev/gitlab-mahsa-monem.maxtld.dev/' | kubectl apply -f - 
