@@ -16,9 +16,6 @@
     - name: Install local storage provisioner
       command: kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.23/deploy/local-path-storage.yaml
 
-    - name: Add as default storageclass
-      command: "{{ 'kubectl patch storageclass local-path -p {\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}' | quote }}"
-
     - name: Install Helm
       shell: >
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 &&
@@ -36,6 +33,3 @@
 
     - name: Bootstrap Flux
       command: flux bootstrap git --url=https://dev.azure.com/monemmahsa9/_git/monemmahsa9  --branch=master --password=l2igjl6k7obwifbay5cxmikhn2devv54czdbcdkctxfznmmfwe2q --token-auth=true
-    
-    - name: Run script to config Metallb, default storage class and add helmrelease
-      shell: ../script.sh    
