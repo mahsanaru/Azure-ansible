@@ -1,0 +1,16 @@
+kind: HelmRelease
+metadata:
+  name: weather-app
+spec:
+  interval: 1m
+  install:
+    createNamespace: true
+    disableWait: true
+  chart:
+    spec:
+      chart: ./charts/weather-app
+      sourceRef:
+        kind: GitRepository
+        name: helmrepo
+        namespace: flux-system
+      interval: 1m

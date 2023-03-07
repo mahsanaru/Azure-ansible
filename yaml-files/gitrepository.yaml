@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: helmrepo
+  namespace: flux-system
+spec:
+  gitImplementation: go-git
+  interval: 1m0s
+  ref:
+    branch: master
+  secretRef:
+    name: flux-system
+  url: https://dev.azure.com/monemmahsa9/monemmahsa9/_git/monemmahsa9
